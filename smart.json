@@ -1,0 +1,9 @@
+{
+  "name": "vue",
+  "description": "Vue for Meteor",
+  "homepage": "https://github.com/zhouzhuojie/meteor-vue",
+  "author": "Zhuojie Zhou <zz@pycode.me> (http://zzj.im)",
+  "version": "0.0.1",
+  "git": "https://github.com/zhouzhuojie/meteor-vue.git",
+  "packages": {}
+}
