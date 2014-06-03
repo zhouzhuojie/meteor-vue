@@ -2,5 +2,8 @@ language: node_js
 node_js:
   - "0.10"
 before_install:
-  - "git submodule update --init --recursive"
-  - "curl -L http://git.io/ejPSng | /bin/sh"
+  - "npm install -g coffee-script"
+services:
+  - mongodb
+env:
+  - LAIKA_OPTIONS="-t 5000"
