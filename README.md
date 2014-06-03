@@ -1,6 +1,5 @@
-Vue in Meteor
+Meteor-Vue [![Build Status](https://travis-ci.org/zhouzhuojie/meteor-vue.svg?branch=master)](https://travis-ci.org/zhouzhuojie/meteor-vue)
 ===============
-
 
 Usage
 -------

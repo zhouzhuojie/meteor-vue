@@ -1,6 +1,6 @@
 assert = require 'assert'
 
-suite 'Vue', ->
+suite 'Meteor-Vue', ->
 
   test 'Environment Setup', (done, server, client) ->
     client.eval ->
