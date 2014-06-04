@@ -35,6 +35,9 @@ suite 'Meteor-Vue', ->
           sync:
             post: ->
               Posts.findOne 'xxx'
+          computed:
+            postTitleWordCount: ->
+              @.post?.title?.length
       Posts.find('xxx').observe
         added: (post) ->
           Meteor.setTimeout(
@@ -43,6 +46,7 @@ suite 'Meteor-Vue', ->
                 not _.isArray window.v.post
                 _.isEqual post, window.v.post
                 $("div#post:contains('#{post._id}')").length
+                _.isEqual window.v.postTitleWordCount, post.title.length
               ]
               emit 'client-get-post', expectTrue
             , 100
@@ -54,6 +58,9 @@ suite 'Meteor-Vue', ->
   test 'Sync find()', (done, server, client) ->
     server.eval ->
       Posts.insert
+        _id: 'xxx'
+        title: '1'
+      Posts.insert
         _id: 'yyy'
         title: '2'
     client.eval ->
@@ -63,6 +70,9 @@ suite 'Meteor-Vue', ->
           sync:
             posts: ->
               Posts.find()
+          computed:
+            totalNumPosts: ->
+              @.posts?.length
       Posts.find().observe
         added: (post) ->
           Meteor.setTimeout(
@@ -72,6 +82,7 @@ suite 'Meteor-Vue', ->
                 _.isArray window.v.posts
                 _.isEqual post, p
                 $("div#posts:contains('#{post._id}')").length
+                _.isEqual Posts.find().count(), window.v.totalNumPosts
               ]
               emit 'client-get-posts', expectTrue
             , 100

@@ -4,7 +4,7 @@
 
   assert = require('assert');
 
-  suite('Vue', function() {
+  suite('Meteor-Vue', function() {
     test('Environment Setup', function(done, server, client) {
       client["eval"](function() {
         var v;
@@ -43,6 +43,12 @@
               post: function() {
                 return Posts.findOne('xxx');
               }
+            },
+            computed: {
+              postTitleWordCount: function() {
+                var _ref, _ref1;
+                return (_ref = this.post) != null ? (_ref1 = _ref.title) != null ? _ref1.length : void 0 : void 0;
+              }
             }
           });
         });
@@ -50,7 +56,7 @@
           added: function(post) {
             return Meteor.setTimeout(function() {
               var expectTrue;
-              expectTrue = _.any([!_.isArray(window.v.post), _.isEqual(post, window.v.post), $("div#post:contains('" + post._id + "')").length]);
+              expectTrue = _.any([!_.isArray(window.v.post), _.isEqual(post, window.v.post), $("div#post:contains('" + post._id + "')").length, _.isEqual(window.v.postTitleWordCount, post.title.length)]);
               return emit('client-get-post', expectTrue);
             }, 100);
           }
@@ -63,6 +69,10 @@
     });
     test('Sync find()', function(done, server, client) {
       server["eval"](function() {
+        Posts.insert({
+          _id: 'xxx',
+          title: '1'
+        });
         return Posts.insert({
           _id: 'yyy',
           title: '2'
@@ -76,6 +86,12 @@
               posts: function() {
                 return Posts.find();
               }
+            },
+            computed: {
+              totalNumPosts: function() {
+                var _ref;
+                return (_ref = this.posts) != null ? _ref.length : void 0;
+              }
             }
           });
         });
@@ -86,7 +102,7 @@
               p = _.findWhere(window.v.posts, {
                 _id: post._id
               });
-              expectTrue = _.any([_.isArray(window.v.posts), _.isEqual(post, p), $("div#posts:contains('" + post._id + "')").length]);
+              expectTrue = _.any([_.isArray(window.v.posts), _.isEqual(post, p), $("div#posts:contains('" + post._id + "')").length, _.isEqual(Posts.find().count(), window.v.totalNumPosts)]);
               return emit('client-get-posts', expectTrue);
             }, 100);
           }
