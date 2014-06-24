@@ -34,7 +34,6 @@ suite 'Meteor-Vue', ->
       Session.set 'sessionPost', '2'
       Deps.flush()
       Deps.afterFlush ->
-        console.log [window.v.sessionPost, Session.get('sessionPost')]
         expectTrue = _.isEqual window.v.sessionPost, Session.get('sessionPost')
         emit 'client-get-sessionPost', expectTrue
     client.once 'client-get-sessionPost', (expectTrue) ->
@@ -58,17 +57,15 @@ suite 'Meteor-Vue', ->
               @.post?.title?.length
       Posts.find('xxx').observe
         added: (post) ->
-          Meteor.setTimeout(
-            ->
-              expectTrue = _.any [
-                not _.isArray window.v.post
-                _.isEqual post, window.v.post
-                $("div#post:contains('#{post._id}')").length
-                _.isEqual window.v.postTitleWordCount, post.title.length
-              ]
-              emit 'client-get-post', expectTrue
-            , 100
-          )
+          Deps.flush()
+          Deps.afterFlush ->
+            expectTrue = _.any [
+              not _.isArray window.v.post
+              _.isEqual post, window.v.post
+              $("div#post:contains('#{post._id}')").length
+              _.isEqual window.v.postTitleWordCount, post.title.length
+            ]
+            emit 'client-get-post', expectTrue
     client.once 'client-get-post', (expectTrue) ->
       assert expectTrue
       done()
@@ -93,18 +90,16 @@ suite 'Meteor-Vue', ->
               @.posts?.length
       Posts.find().observe
         added: (post) ->
-          Meteor.setTimeout(
-            ->
-              p = _.findWhere window.v.posts, {_id: post._id}
-              expectTrue = _.any [
-                _.isArray window.v.posts
-                _.isEqual post, p
-                $("div#posts:contains('#{post._id}')").length
-                _.isEqual Posts.find().count(), window.v.totalNumPosts
-              ]
-              emit 'client-get-posts', expectTrue
-            , 100
-          )
+          Deps.flush()
+          Deps.afterFlush ->
+            p = _.findWhere window.v.posts, {_id: post._id}
+            expectTrue = _.any [
+              _.isArray window.v.posts
+              _.isEqual post, p
+              $("div#posts:contains('#{post._id}')").length
+              _.isEqual Posts.find().count(), window.v.totalNumPosts
+            ]
+            emit 'client-get-posts', expectTrue
     client.once 'client-get-posts', (expectTrue) ->
       assert expectTrue
       done()
@@ -123,17 +118,15 @@ suite 'Meteor-Vue', ->
               Posts.find().fetch()
       Posts.find().observe
         added: (post) ->
-          Meteor.setTimeout(
-            ->
-              p = _.findWhere window.v.postsFetch, {_id: post._id}
-              expectTrue = _.any [
-                _.isArray window.v.postsFetch
-                _.isEqual post, p
-                $("div#postsFetch:contains('#{post._id}')").length
-              ]
-              emit 'client-get-postsFetch', expectTrue
-            , 100
-          )
+          Deps.flush()
+          Deps.afterFlush ->
+            p = _.findWhere window.v.postsFetch, {_id: post._id}
+            expectTrue = _.any [
+              _.isArray window.v.postsFetch
+              _.isEqual post, p
+              $("div#postsFetch:contains('#{post._id}')").length
+            ]
+            emit 'client-get-postsFetch', expectTrue
     client.once 'client-get-postsFetch', (expectTrue) ->
       assert expectTrue
       done()
@@ -153,16 +146,14 @@ suite 'Meteor-Vue', ->
               Posts.findOne 'bestPost'
       Posts.find('bestPost').observe
         added: (post) ->
-          Meteor.setTimeout(
-            ->
-              expectTrue = _.any [
-                not _.isArray window.v.bestPost
-                _.isEqual post, window.v.bestPost
-                $("div#bestPost:contains('#{post._id}')").length
-              ]
-              emit 'before-update', expectTrue
-            , 100
-          )
+          Deps.flush()
+          Deps.afterFlush ->
+            expectTrue = _.any [
+              not _.isArray window.v.bestPost
+              _.isEqual post, window.v.bestPost
+              $("div#bestPost:contains('#{post._id}')").length
+            ]
+            emit 'before-update', expectTrue
         changed: (newPost) ->
           if count is 0
             count = count + 1

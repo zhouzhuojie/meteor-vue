@@ -28,6 +28,31 @@
         return done();
       });
     });
+    test('Sync Session reactive', function(done, server, client) {
+      client["eval"](function() {
+        Session.set('sessionPost', '1');
+        waitForDOM('#post', function() {
+          return window.v = new Vue({
+            sync: {
+              sessionPost: function() {
+                return Session.get('sessionPost');
+              }
+            }
+          });
+        });
+        Session.set('sessionPost', '2');
+        Deps.flush();
+        return Deps.afterFlush(function() {
+          var expectTrue;
+          expectTrue = _.isEqual(window.v.sessionPost, Session.get('sessionPost'));
+          return emit('client-get-sessionPost', expectTrue);
+        });
+      });
+      return client.once('client-get-sessionPost', function(expectTrue) {
+        assert(expectTrue);
+        return done();
+      });
+    });
     test('Sync findOne()', function(done, server, client) {
       server["eval"](function() {
         return Posts.insert({
@@ -54,11 +79,12 @@
         });
         return Posts.find('xxx').observe({
           added: function(post) {
-            return Meteor.setTimeout(function() {
+            Deps.flush();
+            return Deps.afterFlush(function() {
               var expectTrue;
               expectTrue = _.any([!_.isArray(window.v.post), _.isEqual(post, window.v.post), $("div#post:contains('" + post._id + "')").length, _.isEqual(window.v.postTitleWordCount, post.title.length)]);
               return emit('client-get-post', expectTrue);
-            }, 100);
+            });
           }
         });
       });
@@ -97,14 +123,15 @@
         });
         return Posts.find().observe({
           added: function(post) {
-            return Meteor.setTimeout(function() {
+            Deps.flush();
+            return Deps.afterFlush(function() {
               var expectTrue, p;
               p = _.findWhere(window.v.posts, {
                 _id: post._id
               });
               expectTrue = _.any([_.isArray(window.v.posts), _.isEqual(post, p), $("div#posts:contains('" + post._id + "')").length, _.isEqual(Posts.find().count(), window.v.totalNumPosts)]);
               return emit('client-get-posts', expectTrue);
-            }, 100);
+            });
           }
         });
       });
@@ -133,14 +160,15 @@
         });
         return Posts.find().observe({
           added: function(post) {
-            return Meteor.setTimeout(function() {
+            Deps.flush();
+            return Deps.afterFlush(function() {
               var expectTrue, p;
               p = _.findWhere(window.v.postsFetch, {
                 _id: post._id
               });
               expectTrue = _.any([_.isArray(window.v.postsFetch), _.isEqual(post, p), $("div#postsFetch:contains('" + post._id + "')").length]);
               return emit('client-get-postsFetch', expectTrue);
-            }, 100);
+            });
           }
         });
       });
@@ -171,11 +199,12 @@
         });
         return Posts.find('bestPost').observe({
           added: function(post) {
-            return Meteor.setTimeout(function() {
+            Deps.flush();
+            return Deps.afterFlush(function() {
               var expectTrue;
               expectTrue = _.any([!_.isArray(window.v.bestPost), _.isEqual(post, window.v.bestPost), $("div#bestPost:contains('" + post._id + "')").length]);
               return emit('before-update', expectTrue);
-            }, 100);
+            });
           },
           changed: function(newPost) {
             var expectTrue;
