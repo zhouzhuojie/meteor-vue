@@ -23,6 +23,24 @@ suite 'Meteor-Vue', ->
       assert.equal isVueMethodReady, true
       done()
 
+  test 'Sync Session reactive', (done, server, client) ->
+    client.eval ->
+      Session.set 'sessionPost', '1'
+      waitForDOM '#post', ->
+        window.v = new Vue
+          sync:
+            sessionPost: ->
+              Session.get 'sessionPost'
+      Session.set 'sessionPost', '2'
+      Deps.flush()
+      Deps.afterFlush ->
+        console.log [window.v.sessionPost, Session.get('sessionPost')]
+        expectTrue = _.isEqual window.v.sessionPost, Session.get('sessionPost')
+        emit 'client-get-sessionPost', expectTrue
+    client.once 'client-get-sessionPost', (expectTrue) ->
+      assert expectTrue
+      done()
+
   test 'Sync findOne()', (done, server, client) ->
     server.eval ->
       Posts.insert
