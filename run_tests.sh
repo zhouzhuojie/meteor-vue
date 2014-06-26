@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ## Tiny script to copy the package into the test meteor app
-
-DEST_PATH=./tests/packages/vue
+PACKAGE_NAME=vue
+DEST_PATH=./tests/packages/$PACKAGE_NAME
 
 # reset and create the package-folder
 if [[ -d $DEST_PATH ]]; then
@@ -18,3 +18,4 @@ cd tests/
 coffee --compile --output tests tests
 laika
 cd ..
+rm -rf $DEST_PATH

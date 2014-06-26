@@ -20,7 +20,7 @@
       client["eval"](function() {
         var isVueMethodReady, v;
         v = new Vue();
-        isVueMethodReady = _.any([v.$$syncDict != null, v.$sync != null, v.$unsync != null]);
+        isVueMethodReady = _.every([v.$$syncDict != null, v.$sync != null, v.$unsync != null]);
         return emit('isVueMethodReady', isVueMethodReady);
       });
       return client.once('isVueMethodReady', function(isVueMethodReady) {
@@ -53,7 +53,7 @@
         return done();
       });
     });
-    test('Sync findOne()', function(done, server, client) {
+    return test('Sync findOne()', function(done, server, client) {
       server["eval"](function() {
         return Posts.insert({
           _id: 'xxx',
@@ -61,173 +61,41 @@
         });
       });
       client["eval"](function() {
-        waitForDOM('#post', function() {
-          return window.v = new Vue({
-            el: '#post',
-            sync: {
-              post: function() {
-                return Posts.findOne('xxx');
+        var emitPost, xxx;
+        emitPost = function(post) {
+          waitForDOM('#post', function() {
+            return window.v = new Vue({
+              el: '#post',
+              sync: {
+                post: function() {
+                  return Posts.findOne('xxx');
+                }
+              },
+              computed: {
+                postTitleWordCount: function() {
+                  var _ref, _ref1;
+                  return (_ref = this.post) != null ? (_ref1 = _ref.title) != null ? _ref1.length : void 0 : void 0;
+                }
               }
-            },
-            computed: {
-              postTitleWordCount: function() {
-                var _ref, _ref1;
-                return (_ref = this.post) != null ? (_ref1 = _ref.title) != null ? _ref1.length : void 0 : void 0;
-              }
-            }
-          });
-        });
-        return Posts.find('xxx').observe({
-          added: function(post) {
-            Deps.flush();
-            return Deps.afterFlush(function() {
-              var expectTrue;
-              expectTrue = _.any([!_.isArray(window.v.post), _.isEqual(post, window.v.post), $("div#post:contains('" + post._id + "')").length, _.isEqual(window.v.postTitleWordCount, post.title.length)]);
-              return emit('client-get-post', expectTrue);
             });
-          }
-        });
+          });
+          Deps.flush();
+          return Deps.afterFlush(function() {
+            var expectTrue;
+            expectTrue = _.every([!_.isArray(window.v.post), _.isEqual(post, window.v.post), $("div#post:contains('" + post._id + "')").length, _.isEqual(window.v.postTitleWordCount, post.title.length)]);
+            return emit('client-get-post', expectTrue);
+          });
+        };
+        xxx = Posts.findOne('xxx');
+        if (xxx != null) {
+          return emitPost(xxx);
+        } else {
+          return Posts.find('xxx').observe({
+            added: emitPost
+          });
+        }
       });
       return client.once('client-get-post', function(expectTrue) {
-        assert(expectTrue);
-        return done();
-      });
-    });
-    test('Sync find()', function(done, server, client) {
-      server["eval"](function() {
-        Posts.insert({
-          _id: 'xxx',
-          title: '1'
-        });
-        return Posts.insert({
-          _id: 'yyy',
-          title: '2'
-        });
-      });
-      client["eval"](function() {
-        waitForDOM('#posts', function() {
-          return window.v = new Vue({
-            el: '#posts',
-            sync: {
-              posts: function() {
-                return Posts.find();
-              }
-            },
-            computed: {
-              totalNumPosts: function() {
-                var _ref;
-                return (_ref = this.posts) != null ? _ref.length : void 0;
-              }
-            }
-          });
-        });
-        return Posts.find().observe({
-          added: function(post) {
-            Deps.flush();
-            return Deps.afterFlush(function() {
-              var expectTrue, p;
-              p = _.findWhere(window.v.posts, {
-                _id: post._id
-              });
-              expectTrue = _.any([_.isArray(window.v.posts), _.isEqual(post, p), $("div#posts:contains('" + post._id + "')").length, _.isEqual(Posts.find().count(), window.v.totalNumPosts)]);
-              return emit('client-get-posts', expectTrue);
-            });
-          }
-        });
-      });
-      return client.once('client-get-posts', function(expectTrue) {
-        assert(expectTrue);
-        return done();
-      });
-    });
-    test('Sync find().fetch()', function(done, server, client) {
-      server["eval"](function() {
-        return Posts.insert({
-          _id: 'zzz',
-          title: '3'
-        });
-      });
-      client["eval"](function() {
-        waitForDOM('#postsFetch', function() {
-          return window.v = new Vue({
-            el: '#postsFetch',
-            sync: {
-              postsFetch: function() {
-                return Posts.find().fetch();
-              }
-            }
-          });
-        });
-        return Posts.find().observe({
-          added: function(post) {
-            Deps.flush();
-            return Deps.afterFlush(function() {
-              var expectTrue, p;
-              p = _.findWhere(window.v.postsFetch, {
-                _id: post._id
-              });
-              expectTrue = _.any([_.isArray(window.v.postsFetch), _.isEqual(post, p), $("div#postsFetch:contains('" + post._id + "')").length]);
-              return emit('client-get-postsFetch', expectTrue);
-            });
-          }
-        });
-      });
-      return client.once('client-get-postsFetch', function(expectTrue) {
-        assert(expectTrue);
-        return done();
-      });
-    });
-    return test('Unsync', function(done, server, client) {
-      server["eval"](function() {
-        return Posts.insert({
-          _id: 'bestPost',
-          title: 'I am the best post'
-        });
-      });
-      client["eval"](function() {
-        var count;
-        count = 0;
-        waitForDOM('#bestPost', function() {
-          return window.v = new Vue({
-            el: '#bestPost',
-            sync: {
-              bestPost: function() {
-                return Posts.findOne('bestPost');
-              }
-            }
-          });
-        });
-        return Posts.find('bestPost').observe({
-          added: function(post) {
-            Deps.flush();
-            return Deps.afterFlush(function() {
-              var expectTrue;
-              expectTrue = _.any([!_.isArray(window.v.bestPost), _.isEqual(post, window.v.bestPost), $("div#bestPost:contains('" + post._id + "')").length]);
-              return emit('before-update', expectTrue);
-            });
-          },
-          changed: function(newPost) {
-            var expectTrue;
-            if (count === 0) {
-              count = count + 1;
-              expectTrue = _.any([window.v.$$syncDict['bestPost'] == null, !_.isArray(window.v.bestPost), !_.isEqual(newPost, window.v.bestPost), $("div#bestPost:contains('" + newPost._id + "')").length]);
-              return emit('after-update', expectTrue);
-            }
-          }
-        });
-      });
-      client.once('before-update', function(expectTrue) {
-        assert(expectTrue);
-        return client["eval"](function() {
-          window.v.$unsync('bestPost');
-          return Posts.update('bestPost', {
-            $set: {
-              title: post.title + '!'
-            }
-          });
-        });
-      });
-      return client.once('after-update', function(expectTrue) {
         assert(expectTrue);
         return done();
       });
