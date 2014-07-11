@@ -1,6 +1,6 @@
 {
   "name": "vue",
-  "description": "Vue for Meteor",
+  "description": "Vue for Meteor, Vue.js is a library for building interactive web interfaces. It provides data-driven components with a simple and flexible API.",
   "homepage": "https://github.com/zhouzhuojie/meteor-vue",
   "author": "Zhuojie Zhou <zz@pycode.me> (http://zzj.im)",
   "version": "0.0.1",

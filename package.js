@@ -1,5 +1,6 @@
 Package.describe({
-  summary: "Vue"
+  summary: "Vue for Meteor, Vue.js is a library for building interactive web interfaces. It provides data-driven components with a simple and flexible API.",
+  version: "0.0.1"
 });
 
 Package.on_use(function (api) {
@@ -10,12 +11,3 @@ Package.on_use(function (api) {
     api.export('Vue', 'client');
   }
 });
-
-//Package.on_test(function (api) {
-  //api.use('coffeescript', 'client');
-  //api.use('underscore', 'client');
-  //api.use('vue', 'client');
-  //api.use(['tinytest', 'ui', 'spacebars', 'templating']);
-  //api.add_files('tests/test.coffee', 'client');
-  //api.add_files('tests/test.html', 'client');
-//});
