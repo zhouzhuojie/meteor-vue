@@ -1,5 +1,5 @@
 Package.describe({
-  summary: "Vue for Meteor, Vue.js is a library for building interactive web interfaces. It provides data-driven components with a simple and flexible API.",
+  summary: "Vue for Meteor. It provides data-driven components with a simple and flexible API.",
   version: "0.1.0",
   git: "https://github.com/zhouzhuojie/meteor-vue.git",
   name: "mrt:vue"
