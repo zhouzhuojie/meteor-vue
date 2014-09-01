@@ -1,10 +1,5 @@
 language: node_js
 node_js:
-  - "0.10"
+- "0.10"
 before_install:
-  - "curl https://install.meteor.com | /bin/sh"
-  - "npm install -g coffee-script"
-  - "npm install -g meteorite"
-  - "npm install -g laika"
-services:
-  - mongodb
+- "curl -L http://git.io/ejPSng | /bin/sh"
