@@ -10,7 +10,7 @@ mrt add vue
 ```
 
 
-Meteor-Vue is the bridge between [Vue.js [yyx990803/vue]](https://github.com/yyx990803/vue) and Meteor. Vue.js is very a very sleek and fast framework that works with descriptive bidirectional html data-binding. It also offers some animation and transition to your app. `Meteor-Vue` combines them by offering the data-sync option. 
+Meteor-Vue is the bridge between [Vue.js [yyx990803/vue]](https://github.com/yyx990803/vue) and Meteor. Vue.js is a very sleek and fast framework that works with descriptive bidirectional html data-binding. It also offers some animation and transition to your app. `Meteor-Vue` combines them by offering the data-sync option. 
 
 
 Usage
