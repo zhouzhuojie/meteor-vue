@@ -1,9 +1,0 @@
-{
-  "name": "vue",
-  "description": "Vue for Meteor. It provides data-driven components with a simple and flexible API.",
-  "homepage": "https://github.com/zhouzhuojie/meteor-vue",
-  "author": "Zhuojie Zhou <zz@pycode.me> (http://zzj.im)",
-  "version": "0.1.1",
-  "git": "https://github.com/zhouzhuojie/meteor-vue.git",
-  "packages": {}
-}
