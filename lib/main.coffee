@@ -1,36 +1,28 @@
-if typeof Package isnt "undefined"
-  Vue = @Vue
+Vue = @Vue
 
+p = Vue.prototype
 
-class MeteorVue extends Vue
+p.__init__ = p._init
 
-  constructor: (option) ->
-    self = this
-    self.$$syncDict = {}
-    super _.omit option, 'sync'
+p._init = (option) ->
+    @$$syncDict = {}
+    @__init__ _.omit option, 'sync'
     if option?.sync?
-      _.each option.sync, (resFunc, key) ->
-        self.$sync key, resFunc
+      _.each option.sync, (resFunc, key) =>
+        @$sync key, resFunc
 
-  $sync: (key, resFunc) ->
-    self = this
-    self.$unsync key
+p.$unsync = (key) ->
+    @$$syncDict[key]?.stop?()
+
+p.$sync = (key, resFunc) ->
+    @$unsync key
     if _.isFunction resFunc
-      self.$$syncDict[key] = Deps.autorun ->
+      @$$syncDict[key] = Deps.autorun =>
         val = resFunc()
         if val?
           if val.fetch?
-            self.$set key, val.fetch()
+            @$set key, val.fetch()
           else
-            self.$set key, val
-    return
+            @$set key, val
 
-  $unsync: (key) ->
-    self = this
-    self.$$syncDict[key]?.stop?()
-    return
-
-
-MeteorVue.config 'delimiters', ['[', ']']
-
-Vue = MeteorVue
+Vue.config.delimiters = ['[', ']']
