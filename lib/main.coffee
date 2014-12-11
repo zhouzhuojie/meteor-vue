@@ -25,4 +25,4 @@ p.$sync = (key, resFunc) ->
           else
             @$set key, val
 
-Vue.config.delimiters = ['[', ']']
+Vue.config.delimiters = ['[[', ']]']
