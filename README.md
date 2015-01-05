@@ -4,21 +4,23 @@ Meteor-Vue [![Build Status](https://travis-ci.org/zhouzhuojie/meteor-vue.svg?bra
 Get Started
 -----------
 
-Installation. Make sure you have Meteor and Meteorite installed.
+Meteor-Vue is the bridge between [Vue.js [yyx990803/vue]](https://github.com/yyx990803/vue) and Meteor. Vue.js is a very sleek and fast framework that works with descriptive bidirectional html data-binding. It also offers animation and transition to your app. `Meteor-Vue` combines them by offering the data-sync option.
+
+Installation. For Meteor@1.0 or later,
 ```
 meteor add mrt:vue
 ```
 
-Meteor-Vue is the bridge between [Vue.js [yyx990803/vue]](https://github.com/yyx990803/vue) and Meteor. Vue.js is a very sleek and fast framework that works with descriptive bidirectional html data-binding. It also offers animation and transition to your app. `Meteor-Vue` combines them by offering the data-sync option.
-
 Usage
 -------
 
-First you need to instantiate `var vm = new Vue({})` with option:
+First you need to instantiate `var vm = new Vue({})` with option `sync`, which is linked with any reactive source from Meteor:
 
 ```
 sync: {
-    'some-key': function(){}
+    'some-key': function(){
+        // It should return a reactive source
+    }
 }
 ```
 
@@ -33,7 +35,7 @@ var vm = new Vue({
         },
         sync: {
             'data3': function() {
-                return Posts.find();
+                return Posts.find()
             },
             'data4': function() {
                 return Posts.find().fetch();
@@ -48,9 +50,9 @@ var vm = new Vue({
 });
 ```
 
-After the instantiation of `vm`, the `sync` property automatically maps all its functions' return into `vm` and `vm.$data`, which means one can access these data like:
+After the instantiation of `vm`, the `sync` property automatically maps all its functions' return value into `vm` and `vm.$data`, which means one can access these data like:
 ```javascript
-var data3 = vm.data3 // or vm.$data.data3, vue.js automatically take care of this.
+var data3 = vm.data3
 var data4 = vm.data4
 
 // or some HTML
@@ -111,7 +113,7 @@ API
 If you want to dynamically bind more reactive data source, use the following api:
 
 ```javascript
-vm.$sync(key, func); // The function should return something like Posts.find() or Posts.findOne()
+vm.$sync(key, func);
 vm.$unsync(key);
 ```
 
