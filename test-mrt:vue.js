@@ -7,6 +7,30 @@ if(Meteor.isClient){
         test.isTrue(typeof(vm.$unsync) === "function", 'nprogres unsync should be a function');
     });
 
+    Tinytest.addAsync('Vue supports binding to the vm, `this` refer to the vm itself', function (test, next) {
+        var vm = new Vue({
+            data: {
+                a: 'key'
+            },
+            computed: {
+                c: function(){
+                    return this.b;
+                }
+            },
+            sync: {
+                b: function(){
+                    return Session.get(this.a);
+                }
+            }
+        });
+        Session.set('key', 'iamb');
+        _.delay(function(){
+            test.equal(Session.get('key'), vm.b);
+            test.equal(Session.get('key'), vm.c);
+            next();
+        }, 0);
+    });
+
     Tinytest.addAsync('Vue can be synced with Session', function (test, next) {
         var vm = new Vue({
             data: {

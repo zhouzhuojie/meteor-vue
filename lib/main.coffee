@@ -18,7 +18,7 @@ p.$sync = (key, rxFunc) ->
   @$unsync key
   if _.isFunction rxFunc
     @$$syncDict[key] = Tracker.autorun =>
-      val = rxFunc()
+      val = rxFunc.call @
       if val?
         if val.fetch?
           @$set key, val.fetch()
