@@ -8,7 +8,7 @@ Meteor-Vue is the bridge between [Vue.js [yyx990803/vue]](https://github.com/yyx
 
 Installation. For Meteor@1.0 or later,
 ```
-meteor add mrt:vue
+meteor add vue:vue
 ```
 
 Usage
