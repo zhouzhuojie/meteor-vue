@@ -1,6 +1,6 @@
 Package.describe({
   summary: "Vue for Meteor. It provides data-driven components with a simple and flexible API.",
-  version: "0.12.0",
+  version: "0.12.1",
   git: "https://github.com/zhouzhuojie/meteor-vue.git",
   name: "vue:vue"
 });
