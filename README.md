@@ -117,6 +117,46 @@ vm.$sync(key, func);
 vm.$unsync(key);
 ```
 
+Meteor-Vue Components
+---------------------
+
+Define your component with `<script type="text/x-template">` template:
+```html
+<body>
+    {{> home}}
+</body>
+
+<template name="home">
+
+    <script type="text/x-template" id="hi-template">
+        Hi, [[name]]
+    </script>
+
+    <div id="app">
+        <hi></hi>
+    </div>
+
+</template>
+```
+
+Register your component with `Vue.component()` and then initialize your Vue view model.
+```javascript
+if (Meteor.isClient) {
+    Template.home.onRendered(function(){
+        Vue.component('hi', {
+            template: '#hi-template',
+            data: function(){
+                return {
+                    name: 'Meteor-Vue'
+                }
+            }
+        })
+        var vm = new Vue({
+            el: '#app'
+        })
+    })
+}
+```
 
 LICENSE
 -------
