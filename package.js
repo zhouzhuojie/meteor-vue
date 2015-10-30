@@ -1,8 +1,8 @@
 Package.describe({
     summary: "Vue for Meteor. It provides data-driven components with a simple and flexible API.",
     version: "1.0.3",
-    git: "https://github.com/nerijunior/meteor-vue.git",
-    name: "nerijunior:vue"
+    git: "https://github.com/zhouzhuojie/meteor-vue.git",
+    name: "vue:vue"
 });
 
 Package.onUse(function(api) {
@@ -18,6 +18,6 @@ Package.onTest(function(api) {
     api.imply('session');
     api.imply('tracker');
     api.use(['underscore@1.0.0']);
-    api.use(['nerijunior:vue', 'tinytest'], ['client']);
+    api.use(['vue:vue', 'tinytest'], ['client']);
     api.addFiles('test-mrt:vue.js', ['client']);
 });
