@@ -23,7 +23,9 @@ if(Meteor.isClient){
                 }
             }
         });
+
         Session.set('key', 'iamb');
+
         _.delay(function(){
             test.equal(Session.get('key'), vm.b);
             test.equal(Session.get('key'), vm.c);
