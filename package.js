@@ -14,8 +14,10 @@ Package.onUse(function(api) {
 });
 
 Package.onTest(function(api) {
-    api.use('mongo');
-    api.use('tracker');
-    api.use(['vue:vue', 'tinytest'], ['client']);
+    api.imply('mongo');
+    api.imply('session');
+    api.imply('tracker');
+    api.use(['underscore@1.0.0']);
+    api.use(['nerijunior:vue', 'tinytest'], ['client']);
     api.addFiles('test-mrt:vue.js', ['client']);
 });
