@@ -57,6 +57,38 @@ if(Meteor.isClient){
         }, 0);
     });
 
+    Tinytest.addAsync('Vue can be synced with Collections find().fetch()', function (test, next) {
+        var C = new Mongo.Collection(null);
+        var vm = new Vue({
+            computed: {
+                c: function(){
+                    return this.b;
+                }
+            },
+            sync: {
+                b: function(){
+                    return C.find('b').fetch();
+                }
+            }
+        });
+
+        C.insert({_id: 'b', title: 'B'}, function(){
+            _.delay(function(){
+                var d = C.find('b').fetch();
+                test.equal(d[0], vm.b[0]);
+                test.equal(d[0], vm.c[0]);
+                C.update('b', {$set: {title: 'BB'}}, function(){
+                    _.delay(function(){
+                        var d = C.find('b').fetch();
+                        test.equal(d[0], vm.b[0]);
+                        test.equal(d[0], vm.c[0]);
+                        next();
+                    }, 0);
+                });
+            }, 0);
+        });
+    });
+
     Tinytest.addAsync('Vue can be synced with Collections find()', function (test, next) {
         var C = new Mongo.Collection(null);
         var vm = new Vue({
@@ -103,7 +135,8 @@ if(Meteor.isClient){
                 }
             }
         });
-        C.update('b', {$set: {title: 'ZZ'}}, function(){
+
+        C.insert({_id: 'b', title: 'ZZ'}, function(){
             _.delay(function(){
                 var d = C.findOne('b');
                 test.equal(d, vm.b);
