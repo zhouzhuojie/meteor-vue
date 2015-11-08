@@ -4,7 +4,7 @@ Meteor-Vue [![Build Status](https://travis-ci.org/zhouzhuojie/meteor-vue.svg?bra
 Get Started
 -----------
 
-Meteor-Vue is the bridge between [Vue.js [yyx990803/vue]](https://github.com/yyx990803/vue) and Meteor. Vue.js is a very sleek and fast framework that works with descriptive bidirectional html data-binding. It also offers animation and transition to your app. `Meteor-Vue` combines them by offering the data-sync option.
+Meteor-Vue is the bridge between [Vue.js [vuejs/vue]](https://github.com/vuejs/vue) and Meteor. Vue.js is a very sleek and fast framework that works with descriptive bidirectional html data-binding. It also offers animation and transition to your app. `Meteor-Vue` combines them by offering the data-sync option.
 
 Installation. For Meteor@1.0 or later,
 ```
@@ -56,7 +56,7 @@ var data3 = vm.data3
 var data4 = vm.data4
 
 // or some HTML
-<div v-repeat="post: data3">
+<div v-for="post in data3">
     [[post.title]]
 </div>
 ```
@@ -76,11 +76,11 @@ Template.home.rendered = function() {
     var vm = new Vue({
         el: '#vue-demo',
         data: {
-            'data1': 'data1',
-            'data2': [1, 2, 3]
+            'name': 'Neil Armstrong',
+            'arrayOfNumbers': [1, 2, 3]
         },
         sync: {
-            'data3': function() {
+            'posts': function() {
                 return Posts.find();
             }
         }
@@ -92,16 +92,16 @@ Template.home.rendered = function() {
 ```html
 <div id="vue-demo">
 
-My name is [[data1]]
+My name is [[name]]
 
 <ul>
-    <li v-repeat="data2">
-        numbers, [[$data]]
+    <li v-for="number in arrayOfNumbers">
+        Number: [[number]]
     </li>
 </ul>
 
 <ul>
-    <li v-repeat="post: data3">
+    <li v-for="post in posts">
         [[post.tiltle]], [[post.content]]
     </li>
 </ul>
