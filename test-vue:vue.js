@@ -145,4 +145,67 @@ if(Meteor.isClient){
             }, 0);
         });
     });
+
+    Tinytest.addAsync('Components support the sync option', function (test, next) {
+        var C = new Mongo.Collection(null);
+
+        var TestComponent = Vue.extend({
+            sync: {
+                b: function(){
+                    return C.findOne('item1');
+                }
+            }
+        });
+        Vue.component('test', TestComponent);
+
+        var vm = new TestComponent({
+            sync: {
+                c: function() {
+                    return C.findOne('item2');
+                }
+            },
+        });
+
+        var count = 3;
+
+        C.insert({_id: 'item1', title: 'ZZ'}, function(){
+            _.delay(function(){
+                var d = C.findOne('item1');
+                test.equal(d, vm.b, "Sync option in Vue.extend");
+                
+                count--;
+                if (count == 0)
+                    next();
+            }, 0);
+        });
+        C.insert({_id: 'item2', title: 'ZZ'}, function(){
+            _.delay(function(){
+                var d = C.findOne('item2');
+                test.equal(d, vm.c, "Sync option in component constructor");
+                
+                count--;
+                if (count == 0)
+                    next();
+            }, 0);
+        });
+
+        var vm2 = new TestComponent({
+            sync: {
+                b: function() {
+                    return C.findOne('item3');
+                }
+            }
+        });
+        C.insert({_id: 'item3', title: 'ZZ'}, function(){
+            _.delay(function(){
+                var d = C.findOne('item3');
+                test.equal(d, vm2.b, "Sync option overrides correctly");
+                
+                count--;
+                if (count == 0)
+                    next();
+            }, 0);
+        });
+
+    });
 }

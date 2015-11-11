@@ -130,6 +130,11 @@ Define your component with `<script type="text/x-template">` template:
 
     <script type="text/x-template" id="hi-template">
         Hi, [[name]]
+
+        <h2>Posts Summary</h2>
+        <ul>
+            <li v-for="post in posts" :post="post">[[post.title]]</li>
+        </ul>
     </script>
 
     <div id="app">
@@ -149,7 +154,12 @@ if (Meteor.isClient) {
                 return {
                     name: 'Meteor-Vue'
                 }
-            }
+            },
+            sync: {
+                posts: function () {
+                    return Posts.find({});
+                }
+            },
         })
         var vm = new Vue({
             el: '#app'
